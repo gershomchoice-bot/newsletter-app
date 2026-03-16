@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Covenant Mercy Nigeria — Newsletter Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:       #1B3A6B;
+    --navy-dark:  #122952;
+    --navy-light: #2C5F9E;
+    --gold:       #C8922A;
+    --gold-light: #F0D9A8;
+    --gold-pale:  #FDF6E3;
+    --cream:      #FAF8F4;
+    --white:      #FFFFFF;
+    --text:       #1A1A2E;
+    --muted:      #64748B;
+    --border:     #DDD8CE;
+    --success:    #2D6A4F;
+    --error:      #8B2020;
+
+    --serif:  'Playfair Display', Georgia, serif;
+    --body:   'Source Serif 4', Georgia, serif;
+    --sans:   'DM Sans', system-ui, sans-serif;
+
+    --radius: 8px;
+    --shadow: 0 2px 12px rgba(27,58,107,0.10);
+    --shadow-lg: 0 8px 32px rgba(27,58,107,0.16);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ─────────────────────────────────────────────── */
+  .topbar {
+    background: var(--navy);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+  }
+  .topbar-cross {
+    width: 28px; height: 28px;
+    border: 2px solid var(--gold);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .topbar-cross::before {
+    content: '✝';
+    color: var(--gold);
+    font-size: 14px;
+    line-height: 1;
+  }
+  .topbar-title {
+    font-family: var(--serif);
+    color: var(--white);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .topbar-subtitle {
+    color: var(--gold-light);
+    font-size: 13px;
+    font-weight: 300;
+    margin-left: 2px;
+  }
+  .topbar-generate {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--white);
+    border: none;
+    padding: 10px 24px;
+    border-radius: var(--radius);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.18s, transform 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-generate:hover { background: #b07d20; transform: translateY(-1px); }
+  .topbar-generate:active { transform: translateY(0); }
+  .topbar-generate:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  /* ── LAYOUT ──────────────────────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* ── SIDEBAR NAV ─────────────────────────────────────────── */
+  .sidebar {
+    position: sticky;
+    top: 78px;
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 20px 0;
+    box-shadow: var(--shadow);
+  }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 20px 12px;
+  }
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar a:hover { color: var(--navy); background: var(--gold-pale); border-left-color: var(--gold); }
+  .sidebar a .nav-num {
+    width: 20px; height: 20px;
+    background: var(--gold-pale);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN FORM ───────────────────────────────────────────── */
+  .main { display: flex; flex-direction: column; gap: 24px; }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    scroll-margin-top: 88px;
+  }
+
+  .card-header {
+    background: var(--navy);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .card-num {
+    width: 26px; height: 26px;
+    background: var(--gold);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-family: var(--serif);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .card-hint {
+    margin-left: auto;
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 300;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+  }
+  .card-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+
+  /* ── FIELDS ──────────────────────────────────────────────── */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--navy);
+  }
+  .label-hint {
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+
+  input[type="text"],
+  textarea {
+    font-family: var(--body);
+    font-size: 14px;
+    color: var(--text);
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  input[type="text"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--navy-light);
+    box-shadow: 0 0 0 3px rgba(44,95,158,0.12);
+    background: var(--white);
+  }
+  input[type="text"].error,
+  textarea.error { border-color: var(--error); }
+
+  textarea { min-height: 90px; }
+  textarea.tall { min-height: 130px; }
+
+  .word-counter {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    margin-top: -2px;
+    font-family: var(--sans);
+  }
+  .word-counter.warn { color: var(--gold); }
+  .word-counter.over { color: var(--error); }
+
+  /* ── BULLET INPUTS ───────────────────────────────────────── */
+  .bullets-group { display: flex; flex-direction: column; gap: 10px; }
+  .bullet-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .bullet-icon {
+    margin-top: 11px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .bullet-row input { flex: 1; }
+
+  /* ── STORY SECTION ───────────────────────────────────────── */
+  .story-parts { display: flex; flex-direction: column; gap: 18px; }
+  .story-part {
+    border-left: 3px solid var(--gold-light);
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .story-part-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── QUOTE BLOCK ─────────────────────────────────────────── */
+  .quote-block {
+    background: var(--gold-pale);
+    border: 1px solid var(--gold-light);
+    border-left: 4px solid var(--gold);
+    border-radius: 6px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ── STATUS BAR ──────────────────────────────────────────── */
+  .status-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy-dark);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 999;
+    min-width: 280px;
+    justify-content: center;
+  }
+  .status-bar.show { display: flex; }
+  .status-bar.success { background: var(--success); }
+  .status-bar.error-bar { background: var(--error); }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── DIVIDER ─────────────────────────────────────────────── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+  }
+
+  /* ── ORG LOCKED ──────────────────────────────────────────── */
+  .org-note {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    border: 1px dashed var(--border);
+  }
+
+  /* ── RESPONSIVE ──────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .field-row, .field-row3 { grid-template-columns: 1fr; }
+    .topbar { padding: 14px 16px; }
+    .topbar-subtitle { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-cross"></div>
+  <div>
+    <div class="topbar-title">Covenant Mercy Nigeria</div>
+    <div class="topbar-subtitle">Monthly Newsletter Generator</div>
+  </div>
+  <button class="topbar-generate" id="generateBtn" onclick="generateNewsletter()">
+    <span>⬇</span> Generate Newsletter
+  </button>
+</header>
+
+<!-- STATUS BAR -->
+<div class="status-bar" id="statusBar">
+  <div class="spinner" id="spinner"></div>
+  <span id="statusText">Generating your newsletter…</span>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Sections</div>
+    <a href="#sec-basics"><span class="nav-num">1</span> Edition Details</a>
+    <a href="#sec-hook"><span class="nav-num">2</span> Opening Hook</a>
+    <a href="#sec-story"><span class="nav-num">3</span> Story of the Month</a>
+    <a href="#sec-mission"><span class="nav-num">4</span> Mission in Motion</a>
+    <a href="#sec-inside"><span class="nav-num">5</span> Inside the Work</a>
+    <a href="#sec-prayer"><span class="nav-num">6</span> Prayer Points</a>
+    <a href="#sec-ahead"><span class="nav-num">7</span> Looking Ahead</a>
+    <a href="#sec-closing"><span class="nav-num">8</span> Closing Gratitude</a>
+  </nav>
+
+  <!-- FORM -->
+  <main class="main">
+
+    <!-- EDITION DETAILS -->
+    <div class="card" id="sec-basics">
+      <div class="card-header">
+        <div class="card-num">1</div>
+        <div class="card-title">Edition Details</div>
+        <div class="card-hint">Fill in every month</div>
+      </div>
+      <div class="card-body">
+        <div class="field-row">
+          <div class="field">
+            <label>Month & Year</label>
+            <input type="text" id="month" placeholder="e.g. April 2026" />
+          </div>
+          <div class="field">
+            <label>Newsletter Title <span class="label-hint">4–7 words, hopeful & faith-oriented</span></label>
+            <input type="text" id="title" placeholder="e.g. When Hope Has a Name" />
+          </div>
+        </div>
+        <hr class="divider" />
+        <div class="org-note">
+          🔒 Org details (name, website, signoff) are locked in the design. Edit <code>server.js</code> → <code>ORG</code> object to update them.
+        </div>
+      </div>
+    </div>
+
+    <!-- OPENING HOOK -->
+    <div class="card" id="sec-hook">
+      <div class="card-header">
+        <div class="card-num">2</div>
+        <div class="card-title">Opening Hook</div>
+        <div class="card-hint">40–60 words</div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>Hook <span class="label-hint">Introduce the story. Hint at transformation. Pull the reader in emotionally.</span></label>
+          <textarea id="hook" class="tall" placeholder="She had stopped believing anything could change…" oninput="countWords(this,'hookCount',40,60)"></textarea>
+          <div class="word-counter" id="hookCount">0 words (target: 40–60)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY OF THE MONTH -->
+    <div class="card" id="sec-story">
+      <div class="card-header">
+        <div class="card-num">3</div>
+        <div class="card-title">Story of the Month</div>
+        <div class="card-hint">200–280 words total</div>
+      </div>
+      <div class="card-body">
+        <div class="field-row">
+          <div class="field">
+            <label>Beneficiary Name</label>
+            <input type="text" id="personName" placeholder="e.g. Ngozi Okafor" />
+          </div>
+          <div class="field">
+            <label>Location <span class="label-hint">State is fine</span></label>
+            <input type="text" id="location" placeholder="e.g. Benue State" />
+          </div>
+        </div>
+
+        <div class="story-parts">
+          <div class="story-part">
+            <div class="story-part-label">A · The Struggle</div>
+            <label class="label-hint" style="margin-left:0">The situation before. 3–4 sentences.</label>
+            <textarea id="struggle" oninput="countWords(this,'struggleCount',0,999)"></textarea>
+            <div class="word-counter" id="struggleCount">0 words</div>
+          </div>
+
+          <div class="story-part">
+            <div class="story-part-label">B · The Turning Point</div>
+            <label class="label-hint" style="margin-left:0">When Covenant Mercy arrived or intervened. 2–3 sentences.</label>
+            <textarea id="turningPoint" oninput="countWords(this,'turnCount',0,999)"></textarea>
+            <div class="word-counter" id="turnCount">0 words</div>
+          </div>
+
+          <div class="story-part">
+            <div class="story-part-label">C · The Transformation</div>
+            <label class="label-hint" style="margin-left:0">What changed for them. 3–4 sentences.</label>
+            <textarea id="transformation" oninput="countWords(this,'transformCount',0,999)"></textarea>
+            <div class="word-counter" id="transformCount">0 words</div>
+          </div>
+
+          <div class="quote-block">
+            <div class="story-part-label" style="color:var(--gold)">D · Human Voice</div>
+            <div class="field">
+              <label>Quote <span class="label-hint">One real-feeling sentence. Write how a person actually talks, not a press release.</span></label>
+              <textarea id="quote" style="min-height:70px" placeholder="Before they came, I used to ask God if He had forgotten my street…"></textarea>
+            </div>
+            <div class="field">
+              <label>Attribution</label>
+              <input type="text" id="quoteAttrib" placeholder="e.g. Ngozi Okafor, Benue State" />
+            </div>
+          </div>
+
+          <div class="story-part">
+            <div class="story-part-label">E · Forward Hope</div>
+            <label class="label-hint" style="margin-left:0">Specific hope for the future. 2–3 sentences.</label>
+            <textarea id="forwardHope" oninput="countWords(this,'hopeCount',0,999)"></textarea>
+            <div class="word-counter" id="hopeCount">0 words</div>
+          </div>
+        </div>
+
+        <div class="word-counter" id="storyTotal" style="font-size:13px; font-weight:600; color:var(--navy); text-align:right">
+          Story total: 0 words (target: 200–280)
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSION IN MOTION -->
+    <div class="card" id="sec-mission">
+      <div class="card-header">
+        <div class="card-num">4</div>
+        <div class="card-title">Mission in Motion</div>
+        <div class="card-hint">3 updates — one sentence each</div>
+      </div>
+      <div class="card-body">
+        <div class="bullets-group">
+          <div class="bullet-row">
+            <div class="bullet-icon"></div>
+            <input type="text" id="mission1" placeholder="e.g. 64 families in Jos South received emergency food relief following the flooding." />
+          </div>
+          <div class="bullet-row">
+            <div class="bullet-icon"></div>
+            <input type="text" id="mission2" placeholder="e.g. Our mobile clinic provided free screenings to 210 residents in three communities." />
+          </div>
+          <div class="bullet-row">
+            <div class="bullet-icon"></div>
+            <input type="text" id="mission3" placeholder="e.g. 12 women graduated from our vocational skills cohort in Makurdi." />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSIDE THE WORK -->
+    <div class="card" id="sec-inside">
+      <div class="card-header">
+        <div class="card-num">5</div>
+        <div class="card-title">Inside the Work</div>
+        <div class="card-hint">80–100 words</div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>Field Story <span class="label-hint">A moment from staff or a volunteer. Feels like a journal entry, not a report.</span></label>
+          <textarea id="insideWork" class="tall" placeholder="Last Tuesday, our field coordinator drove four hours on a dirt road…" oninput="countWords(this,'insideCount',80,100)"></textarea>
+          <div class="word-counter" id="insideCount">0 words (target: 80–100)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRAYER POINTS -->
+    <div class="card" id="sec-prayer">
+      <div class="card-header">
+        <div class="card-num">6</div>
+        <div class="card-title">Prayer Points</div>
+        <div class="card-hint">3–4 requests</div>
+      </div>
+      <div class="card-body">
+        <div class="bullets-group">
+          <div class="bullet-row">
+            <div class="bullet-icon" style="background:var(--navy-light)"></div>
+            <input type="text" id="prayer1" placeholder="Pray for [Name] — for sustained income, protection, and confidence." />
+          </div>
+          <div class="bullet-row">
+            <div class="bullet-icon" style="background:var(--navy-light)"></div>
+            <input type="text" id="prayer2" placeholder="Pray for wisdom as we expand into new communities next quarter." />
+          </div>
+          <div class="bullet-row">
+            <div class="bullet-icon" style="background:var(--navy-light)"></div>
+            <input type="text" id="prayer3" placeholder="Pray for staff safety on difficult roads and encouragement in hard moments." />
+          </div>
+          <div class="bullet-row">
+            <div class="bullet-icon" style="background:var(--navy-light); opacity:0.4"></div>
+            <input type="text" id="prayer4" placeholder="Optional 4th prayer point — leave blank to omit." />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOOKING AHEAD -->
+    <div class="card" id="sec-ahead">
+      <div class="card-header">
+        <div class="card-num">7</div>
+        <div class="card-title">Looking Ahead</div>
+        <div class="card-hint">50–70 words</div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>What's Coming <span class="label-hint">Upcoming outreach, programs, partnerships. Shows forward momentum to donors.</span></label>
+          <textarea id="lookingAhead" class="tall" placeholder="In April, we launch our School Re-Entry Drive…" oninput="countWords(this,'aheadCount',50,70)"></textarea>
+          <div class="word-counter" id="aheadCount">0 words (target: 50–70)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOSING GRATITUDE -->
+    <div class="card" id="sec-closing">
+      <div class="card-header">
+        <div class="card-num">8</div>
+        <div class="card-title">Closing Gratitude</div>
+        <div class="card-hint">40–60 words</div>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>Thank You Message <span class="label-hint">Thank donors for prayer, generosity, and encouragement. Remind them their partnership makes this possible.</span></label>
+          <textarea id="closingGratitude" class="tall" placeholder="None of what you read in this letter happens without you…" oninput="countWords(this,'closingCount',40,60)"></textarea>
+          <div class="word-counter" id="closingCount">0 words (target: 40–60)</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── Word counter ─────────────────────────────────────────────
+function countWords(el, counterId, min, max) {
+  const words = el.value.trim() === '' ? 0 : el.value.trim().split(/\s+/).length;
+  const el2   = document.getElementById(counterId);
+  const label = max < 999
+    ? `${words} words (target: ${min}–${max})`
+    : `${words} words`;
+  el2.textContent = label;
+  el2.className   = 'word-counter';
+  if (max < 999) {
+    if (words > max)      el2.classList.add('over');
+    else if (words < min) el2.classList.add('warn');
+  }
+  updateStoryTotal();
+}
+
+function updateStoryTotal() {
+  const ids   = ['struggle','turningPoint','transformation','quote','forwardHope'];
+  let   total = 0;
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value.trim()) total += el.value.trim().split(/\s+/).length;
+  });
+  const el = document.getElementById('storyTotal');
+  el.textContent = `Story total: ${total} words (target: 200–280)`;
+  el.style.color = total > 280
+    ? 'var(--error)'
+    : (total < 200 && total > 0 ? 'var(--gold)' : 'var(--navy)');
+}
+
+// ── Validation ───────────────────────────────────────────────
+function getVal(id) { return document.getElementById(id).value.trim(); }
+
+function validate() {
+  const required = [
+    'month','title','hook','personName','location',
+    'struggle','turningPoint','transformation','quote','quoteAttrib',
+    'forwardHope','mission1','mission2','mission3',
+    'insideWork','prayer1','prayer2','prayer3','lookingAhead','closingGratitude',
+  ];
+  let ok = true;
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.classList.add('error');    ok = false; }
+    else                  { el.classList.remove('error'); }
+  });
+  return ok;
+}
+
+// ── Status bar ───────────────────────────────────────────────
+function setStatus(msg, type = 'loading', hide = false) {
+  const bar  = document.getElementById('statusBar');
+  const txt  = document.getElementById('statusText');
+  const spin = document.getElementById('spinner');
+  bar.className      = 'status-bar show' +
+    (type === 'success' ? ' success' : type === 'error' ? ' error-bar' : '');
+  txt.textContent    = msg;
+  spin.style.display = type === 'loading' ? 'block' : 'none';
+  if (hide) setTimeout(() => bar.className = 'status-bar', 3000);
+}
+
+// ── Generate via API ─────────────────────────────────────────
+async function generateNewsletter() {
+  if (!validate()) {
+    setStatus('Please fill in all required fields (highlighted in red).', 'error', true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  setStatus('Building your newsletter…', 'loading');
+
+  // Collect all form values into a plain object
+  const payload = {
+    month:           getVal('month'),
+    title:           getVal('title'),
+    hook:            getVal('hook'),
+    personName:      getVal('personName'),
+    location:        getVal('location'),
+    struggle:        getVal('struggle'),
+    turningPoint:    getVal('turningPoint'),
+    transformation:  getVal('transformation'),
+    quote:           getVal('quote'),
+    quoteAttrib:     getVal('quoteAttrib'),
+    forwardHope:     getVal('forwardHope'),
+    mission1:        getVal('mission1'),
+    mission2:        getVal('mission2'),
+    mission3:        getVal('mission3'),
+    insideWork:      getVal('insideWork'),
+    prayer1:         getVal('prayer1'),
+    prayer2:         getVal('prayer2'),
+    prayer3:         getVal('prayer3'),
+    prayer4:         getVal('prayer4'),   // optional — empty string is fine
+    lookingAhead:    getVal('lookingAhead'),
+    closingGratitude: getVal('closingGratitude'),
+  };
+
+  try {
+    const response = await fetch('/api/generate', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || `Server returned ${response.status}`);
+    }
+
+    // Stream the .docx blob and trigger download
+    const blob = await response.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const safe = payload.month.replace(/\s+/g, '-').toLowerCase();
+    a.href     = url;
+    a.download = `newsletter-${safe}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setStatus('✓ Newsletter downloaded successfully!', 'success', true);
+  } catch (err) {
+    console.error(err);
+    setStatus(`Error: ${err.message}`, 'error', true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
