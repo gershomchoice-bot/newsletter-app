@@ -1,5 +1,5 @@
 /**
- * Covenant Mercy Nigeria — Newsletter Generator
+ * Carry Them Ministries — Newsletter Generator
  * Standalone Express server with REST API
  *
  * Routes:
@@ -105,11 +105,11 @@ async function buildNewsletterDocx(data) {
 
   // Org constants — update these if the organisation details ever change
   const ORG = {
-    name:    'Covenant Mercy Nigeria',
-    tagline: 'Serving the Least. Sharing the Most.',
-    website: 'covenantnigeria.org',
-    email:   'info@covenantnigeria.org',
-    signoff: 'Pastor Emmanuel Adeyemi & the Covenant Mercy Nigeria Team',
+    name:    'Carry Them Ministries',
+    tagline: 'We carry them when no one else will. We carry them with love.',
+    website: 'carrythem.org',
+    email:   'Caleb@carrythem.org',
+    signoff: 'Mandy Crotts & the Carry Them Ministries' Team',
   };
 
   // ── Element helpers ──────────────────────────────────────────
