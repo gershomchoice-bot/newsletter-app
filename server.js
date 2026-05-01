@@ -103,7 +103,7 @@ async function buildNewsletterDocx(data) {
     mutedGrey: '888888',
   };
 
-  // Org constants — update these if the organisation details ever change
+  // Org constants — update these if the organisation details ever change 
   const ORG = {
     name:    'Carry Them Ministries',
     tagline: 'We carry them because no one else will. We carry them with love.',
