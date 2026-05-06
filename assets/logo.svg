@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 160" role="img" aria-label="Carry Them Ministries Logo">
+
+  <defs>
+    <clipPath id="cc">
+      <circle cx="78" cy="80" r="72"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── CIRCLE BASE ───────────────────────────────── -->
+  <circle cx="78" cy="80" r="72" fill="#1c2b22"/>
+
+  <!-- Green stripes, clipped to circle -->
+  <g clip-path="url(#cc)">
+    <rect x="6" y="5"   width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="19"  width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="33"  width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="47"  width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="61"  width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="75"  width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="89"  width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="103" width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="117" width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="131" width="144" height="9" fill="#3d8a4e"/>
+    <rect x="6" y="145" width="144" height="9" fill="#3d8a4e"/>
+  </g>
+
+  <!-- ── FIGURE (clipped to circle) ───────────────── -->
+  <g clip-path="url(#cc)">
+
+    <!-- HEADWRAP — large rounded turban, upper portion of circle -->
+    <path d="M 58,18
+             C 54,8  66,2  80,4
+             C 96,6  110,14 110,28
+             C 110,42 98,52  82,52
+             C 66,52  54,42  56,30
+             C 56,26  57,22  58,18 Z"
+          fill="#f0ece2"/>
+
+    <!-- FACE — brown, right side peeking from headwrap -->
+    <ellipse cx="96" cy="40" rx="11" ry="13" fill="#7a4028"/>
+
+    <!-- NECK — short connector between head and robe -->
+    <rect x="76" y="51" width="18" height="9" rx="3" fill="#f0ece2"/>
+
+    <!-- ROBE / BODY — main flowing silhouette
+         Right side sweeps out, left side curves in carrying the baby -->
+    <path d="M 76,58
+             C 96,56  114,64  118,84
+             C 122,104 114,130 104,144
+             C 94,156  74,158  56,152
+             C 36,144  24,126  26,106
+             C 28,88   40,76   54,70
+             C 62,65   70,60   76,58 Z"
+          fill="#f0ece2"/>
+
+    <!-- LEFT ARM WRAP — slight protrusion cradling the baby, left side -->
+    <path d="M 32,100
+             C 22,104  18,116  24,126
+             C 28,132  36,134  44,128
+             C 50,122  50,112  44,106
+             C 40,102  36,100  32,100 Z"
+          fill="#f0ece2"/>
+
+    <!-- BABY BODY — small oval nestled in left arm pocket -->
+    <ellipse cx="44" cy="118" rx="12" ry="15" fill="#f0ece2"/>
+
+    <!-- BABY FACE — brown, top of baby bundle -->
+    <circle cx="44" cy="102" r="10" fill="#7a4028"/>
+
+    <!-- GREEN BEAD — ornament on left side, visible between arm and circle edge -->
+    <circle cx="34" cy="88" r="5" fill="#4ab464"/>
+
+  </g>
+
+  <!-- Circle border ring -->
+  <circle cx="78" cy="80" r="72" fill="none" stroke="#3d8a4e" stroke-width="3"/>
+
+  <!-- ── LOGOTYPE ─────────────────────────────────── -->
+
+  <!-- CARRY THEM — heavy black sans -->
+  <text
+    x="166" y="90"
+    font-family="Nimbus Sans, NimbusSans, Arial, sans-serif"
+    font-weight="bold"
+    font-size="66"
+    fill="#1a1a1a"
+    letter-spacing="2">CARRY THEM</text>
+
+  <!-- ministries — Z003 calligraphic italic, forest green, offset lower-right -->
+  <text
+    x="506" y="130"
+    font-family="Z003, URW Chancery L, serif"
+    font-style="italic"
+    font-weight="500"
+    font-size="46"
+    fill="#2e5e3a">ministries</text>
+
+</svg>

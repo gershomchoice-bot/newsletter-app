@@ -1,19 +1,14 @@
 {
-  "name": "covenant-mercy-newsletter",
-  "version": "1.0.0",
-  "description": "Standalone newsletter generator for Covenant Mercy Nigeria — Express API + Web UI",
+  "name": "carry-them-newsletter",
+  "version": "3.0.0",
+  "description": "Carry Them Ministries Newsletter Generator — PDF output",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "docx": "^8.5.0",
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+    "cors": "^2.8.6",
+    "express": "^4.22.1"
   },
   "engines": {
     "node": ">=18.0.0"
