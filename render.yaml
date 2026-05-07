@@ -2,7 +2,7 @@ services:
   - type: web
     name: newsletter-app
     env: node
-    buildCommand: apt-get update -y && apt-get install -y --no-install-recommends wkhtmltopdf xvfb && npm install
+    buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: PORT

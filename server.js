@@ -8,13 +8,11 @@
  *   GET  /api/health    → Health check
  */
 
-const express  = require('express');
-const cors     = require('cors');
-const path     = require('path');
-const fs       = require('fs');
-const os       = require('os');
-const crypto   = require('crypto');
-const { spawnSync } = require('child_process');
+const express    = require('express');
+const cors       = require('cors');
+const path       = require('path');
+const fs         = require('fs');
+const puppeteer  = require('puppeteer');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -83,44 +81,28 @@ app.post('/api/generate', async (req, res) => {
     return res.status(400).json({ error: 'Missing required images', fields: missingImgs });
   }
 
-  // Write HTML to temp file, generate PDF, stream back
-  const uid      = crypto.randomBytes(8).toString('hex');
-  const htmlPath = path.join(os.tmpdir(), `newsletter-${uid}.html`);
-  const pdfPath  = path.join(os.tmpdir(), `newsletter-${uid}.pdf`);
-
   try {
     const html = buildNewsletterHTML(content, images);
-    fs.writeFileSync(htmlPath, html, 'utf8');
 
-    const result = spawnSync('wkhtmltopdf', [
-      '--quiet',
-      '--page-size',        'A4',
-      '--margin-top',       '0',
-      '--margin-right',     '0',
-      '--margin-bottom',    '0',
-      '--margin-left',      '0',
-      '--enable-local-file-access',
-      '--zoom',             '1',
-      '--dpi',              '150',
-      '--image-quality',    '94',
-      '--print-media-type',
-      htmlPath, pdfPath,
-    ], { timeout: 60000 });
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 60000 });
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      margin: { top: 0, right: 0, bottom: 0, left: 0 },
+      printBackground: true,
+    });
+    await browser.close();
 
-    if (result.status !== 0) {
-      const errMsg = result.stderr?.toString() || 'Unknown error';
-      throw new Error(`wkhtmltopdf failed: ${errMsg}`);
-    }
-
-    const pdfBuffer = fs.readFileSync(pdfPath);
-    const safe      = content.month.replace(/\s+/g, '-').toLowerCase();
-
+    const safe = content.month.replace(/\s+/g, '-').toLowerCase();
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="newsletter-${safe}.pdf"`);
     res.send(pdfBuffer);
-  } finally {
-    try { fs.unlinkSync(htmlPath); } catch (_) {}
-    try { fs.unlinkSync(pdfPath);  } catch (_) {}
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    res.status(500).json({ error: 'PDF generation failed', detail: err.message });
   }
 });
 
