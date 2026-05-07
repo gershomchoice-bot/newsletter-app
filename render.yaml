@@ -1,9 +1,7 @@
 services:
   - type: web
     name: newsletter-app
-    env: node
-    buildCommand: npm install
-    startCommand: node server.js
+    env: docker
     envVars:
       - key: PORT
         value: 3000

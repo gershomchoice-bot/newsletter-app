@@ -8,13 +8,12 @@
  *   GET  /api/health    → Health check
  */
 
-const express    = require('express');
-const cors       = require('cors');
-const path       = require('path');
-const fs         = require('fs');
-const puppeteer  = require('puppeteer');
+const express  = require('express');
+const cors     = require('cors');
+const path     = require('path');
+const fs       = require('fs');
+const puppeteer = require('puppeteer');
 
-const app  = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
@@ -81,30 +80,43 @@ app.post('/api/generate', async (req, res) => {
     return res.status(400).json({ error: 'Missing required images', fields: missingImgs });
   }
 
+  let browser;
   try {
     const html = buildNewsletterHTML(content, images);
 
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    browser = await puppeteer.launch({
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--single-process',
+      ],
+      headless: 'new',
     });
+
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 60000 });
+    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
+
     const pdfBuffer = await page.pdf({
-      format: 'A4',
-      margin: { top: 0, right: 0, bottom: 0, left: 0 },
+      format:          'A4',
       printBackground: true,
+      margin:          { top: 0, right: 0, bottom: 0, left: 0 },
     });
-    await browser.close();
 
     const safe = content.month.replace(/\s+/g, '-').toLowerCase();
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="newsletter-${safe}.pdf"`);
     res.send(pdfBuffer);
   } catch (err) {
-    console.error('PDF generation failed:', err);
-    res.status(500).json({ error: 'PDF generation failed', detail: err.message });
+    console.error('PDF error:', err.message);
+    res.status(500).json({ error: 'Failed to generate PDF', detail: err.message });
+  } finally {
+    if (browser) await browser.close().catch(() => {});
   }
 });
+
 
 // ── HTML Template ───────────────────────────────────────────
 function esc(str) {
