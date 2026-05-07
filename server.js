@@ -84,17 +84,13 @@ app.post('/api/generate', async (req, res) => {
   try {
     const html = buildNewsletterHTML(content, images);
 
-    const { default: puppeteer } = await import('puppeteer');
+    const chromium = require('@sparticuz/chromium');
+    const puppeteer = require('puppeteer-core');
+
     browser = await puppeteer.launch({
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--single-process',
-      ],
-      headless: 'new',
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
