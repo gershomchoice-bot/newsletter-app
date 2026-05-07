@@ -12,7 +12,6 @@ const express  = require('express');
 const cors     = require('cors');
 const path     = require('path');
 const fs       = require('fs');
-const puppeteer = require('puppeteer');
 
 const PORT = process.env.PORT || 3000;
 
@@ -84,6 +83,7 @@ app.post('/api/generate', async (req, res) => {
   try {
     const html = buildNewsletterHTML(content, images);
 
+    const { default: puppeteer } = await import('puppeteer');
     browser = await puppeteer.launch({
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       args: [

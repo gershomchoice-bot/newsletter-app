@@ -1,6 +1,5 @@
-FROM node:18-slim
+FROM node:20-slim
 
-# Install Chromium and its dependencies via apt (reliable, cached in image layer)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium \
     fonts-liberation \
@@ -20,7 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Tell puppeteer to skip downloading Chromium — use the system one above
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
