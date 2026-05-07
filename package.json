@@ -1,17 +1,18 @@
 {
   "name": "carry-them-newsletter",
   "version": "3.0.0",
-  "description": "Carry Them Ministries Newsletter Generator — PDF output",
+  "description": "Carry Them Ministries Newsletter Generator — PDF output via Puppeteer",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "npm install"
   },
   "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^4.22.1",
-    "puppeteer": "^22.0.0"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "puppeteer": "^21.11.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.x"
   }
 }
